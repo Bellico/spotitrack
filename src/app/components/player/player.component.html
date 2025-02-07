@@ -1,0 +1,68 @@
+<div class="flex min-h-screen flex-col items-center p-6">
+  <div class="w-full max-w-md space-y-8 text-center">
+    @if (currentTrack(); as track) {
+    <div>
+      <div
+        class="relative w-64 h-64 mx-auto mb-6 rounded-lg overflow-hidden shadow-2xl"
+      >
+        <img
+          [src]="track.cover"
+          alt="{{ track.title }} by {{ track.artist }}"
+          layout="fill"
+          objectFit="cover"
+          class="rounded-lg"
+        />
+      </div>
+      <h1 class="text-3xl font-bold mb-2">{{ track.title }}</h1>
+      <p class="text-xl text-gray-400">{{ track.artist }}</p>
+    </div>
+    } @else {
+    <div class="text-center py-12">
+      <p class="text-xl text-zinc-400">No track currently playing</p>
+    </div>
+    }
+
+    <div class="space-y-4 mt-8">
+      @for (playlist of playlists(); track playlist.id) {
+      <!-- -->
+      @let isInPlaylist = isTrackInPlaylist(playlist.id);
+      <div
+        (click)="togglePlaylist(playlist.id)"
+        class="flex items-center justify-between p-4 rounded-lg transition-all cursor-pointer"
+        [ngClass]="{
+          'bg-primary/20 hover:bg-primary/30': isInPlaylist,
+          'bg-gray-800 hover:bg-gray-700': !isInPlaylist
+        }"
+      >
+        <div class="flex items-center">
+          <lucide-icon
+            *ngIf="isInPlaylist"
+            [img]="Check"
+            class="h-5 w-5 mr-3 text-spotify-green"
+          ></lucide-icon>
+          <lucide-icon
+            *ngIf="!isInPlaylist"
+            [img]="Music2"
+            class="h-5 w-5 mr-3 text-spotify-green"
+          ></lucide-icon>
+          <span class="text-lg">{{ playlist.name }}</span>
+        </div>
+      </div>
+      }
+    </div>
+    <div class="flex justify-center mb-4 gap-2">
+      <button
+        (click)="logout()"
+        class="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground rounded-md px-3 w-24 h-10 text-sm font-semibold bg-red-500 hover:bg-red-600"
+      >
+        Logout
+      </button>
+      <button
+        (click)="loadCurrentTrack()"
+        class="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground rounded-md px-3 w-24 h-10 text-sm font-semibold bg-gray-900"
+      >
+        Refresh
+      </button>
+    </div>
+  </div>
+</div>
