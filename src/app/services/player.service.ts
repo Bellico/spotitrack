@@ -47,8 +47,8 @@ export class PlayerService {
             [playlistId]: [
               ...current[playlistId],
               {
-                id: currentTrack.id,
-                uri: currentTrack.uri,
+                id: currentTrack!.id,
+                uri: currentTrack!.uri,
               },
             ],
           }));
@@ -71,7 +71,7 @@ export class PlayerService {
           this.playlistTracks.update((current) => ({
             ...current,
             [playlistId]:
-              current[playlistId].filter((t) => t.uri !== currentTrack.uri) ||
+              current[playlistId].filter((t) => t.uri !== currentTrack!.uri) ||
               [],
           }));
         })

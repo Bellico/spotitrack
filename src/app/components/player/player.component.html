@@ -1,5 +1,5 @@
 <div class="flex min-h-screen flex-col items-center p-6">
-  <div class="w-full max-w-md space-y-8 text-center">
+  <div class="w-full max-w-md text-center">
     @if (currentTrack(); as track) {
     <div>
       <div
@@ -22,7 +22,7 @@
     </div>
     }
 
-    <div class="space-y-4 mt-8">
+    <div class="flex flex-col gap-4 mt-8">
       @for (playlist of playlists(); track playlist.id) {
       <!-- -->
       @let isInPlaylist = isTrackInPlaylist(playlist.id);
@@ -50,19 +50,11 @@
       </div>
       }
     </div>
-    <div class="flex justify-center mb-4 gap-2">
-      <button
-        (click)="logout()"
-        class="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground rounded-md px-3 w-24 h-10 text-sm font-semibold bg-red-500 hover:bg-red-600"
+    <div class="flex justify-center m-4 gap-2">
+      <app-button (click)="logout()" variant="danger">Logout</app-button>
+      <app-button (click)="initializePlayer()" variant="secondary"
+        >Refresh</app-button
       >
-        Logout
-      </button>
-      <button
-        (click)="loadCurrentTrack()"
-        class="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground rounded-md px-3 w-24 h-10 text-sm font-semibold bg-gray-900"
-      >
-        Refresh
-      </button>
     </div>
   </div>
 </div>

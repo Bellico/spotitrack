@@ -1,0 +1,22 @@
+{
+  "name": "SpotiTrack",
+  "short_name": "SpotiTrack",
+  "description": "Spotify Playlist Manager",
+  "theme_color": "#1DB954",
+  "background_color": "#000000",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icon144-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}

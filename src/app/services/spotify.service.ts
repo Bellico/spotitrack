@@ -1,6 +1,8 @@
+import { DOCUMENT } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, mergeMap, Observable, of, take } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { PlaylistHelper } from '../helpers/playlist.helper';
 import { Playlist, Track, TrackDetail } from '../models/models';
 import { AuthService } from './auth.service';
@@ -11,9 +13,10 @@ const LIMIT = 100;
   providedIn: 'root',
 })
 export class SpotifyService {
-  private clientId = '0e45085f6f1c45afb1c04e6b7af61061'; // You'll need to add your Spotify Client ID
-  private redirectUri = 'http://localhost:4200/callback';
-  private apiUrl = 'https://api.spotify.com/v1';
+  private readonly location = inject(DOCUMENT)?.defaultView?.location;
+  private clientId = environment.spotify_client_id;
+  private apiUrl = environment.spotify_api_url;
+  private redirectUri = `${this.location?.origin}/callback`;
   private http = inject(HttpClient);
   private authService = inject(AuthService);
 

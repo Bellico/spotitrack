@@ -3,9 +3,11 @@ import { Router } from '@angular/router';
 import { filter, take } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { SpotifyService } from '../../services/spotify.service';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-login',
+  imports: [ButtonComponent],
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit {

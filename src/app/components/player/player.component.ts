@@ -9,10 +9,11 @@ import { filter, mergeAll, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { PlayerService } from '../../services/player.service';
 import { SpotifyService } from '../../services/spotify.service';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-player',
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent],
   templateUrl: './player.component.html',
 })
 export class PlayerComponent implements OnInit {
@@ -42,6 +43,10 @@ export class PlayerComponent implements OnInit {
       .subscribe();
 
     //Initial load
+    this.initializePlayer();
+  }
+
+  initializePlayer() {
     this.loadPlaylists().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     this.loadCurrentTrack().pipe(take(1)).subscribe();
   }
