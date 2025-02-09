@@ -5,7 +5,6 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ## Environment Variables
 
 ```bash
-# Use env for docker
 spotify_client_id = "To Set"
 ```
 
