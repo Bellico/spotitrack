@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common'
 import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { filter, take } from 'rxjs'
@@ -14,6 +15,7 @@ export class LoginComponent implements OnInit {
   private spotifyService = inject(SpotifyService)
   private authService = inject(AuthService)
   private router = inject(Router)
+  private readonly location = inject(DOCUMENT)?.defaultView?.location
 
   ngOnInit() {
     this.authService
@@ -28,7 +30,11 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    if (!this.location) {
+      return
+    }
+
     const loginUrl = this.spotifyService.getLoginUrl()
-    window.location.href = loginUrl
+    this.location.href = loginUrl
   }
 }

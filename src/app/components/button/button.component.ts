@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, input } from '@angular/core'
 import { LucideAngularModule } from 'lucide-angular'
 
 @Component({
@@ -6,19 +6,19 @@ import { LucideAngularModule } from 'lucide-angular'
   standalone: true,
   imports: [LucideAngularModule],
   template: `
-    <button [class]="getButtonClasses()" [type]="type">
-      @if (icon) {
-      <lucide-icon [img]="icon" class="h-4 w-4 mr-2"></lucide-icon>
+    <button [class]="getButtonClasses()" [type]="type()">
+      @if (icon()) {
+      <lucide-icon [img]="icon()" class="h-4 w-4 mr-2"></lucide-icon>
       }
       <ng-content></ng-content>
     </button>
   `,
 })
 export class ButtonComponent {
-  @Input() variant: 'primary' | 'danger' | 'secondary' = 'primary'
-  @Input() type: 'button' | 'submit' = 'button'
-  @Input() classname?: string
-  @Input() icon?: never
+  readonly variant = input<'primary' | 'danger' | 'secondary'>('primary')
+  readonly type = input<'button' | 'submit'>('button')
+  readonly classname = input<string>()
+  readonly icon = input<never>()
 
   getButtonClasses(): string {
     const baseClasses =
@@ -30,6 +30,6 @@ export class ButtonComponent {
       secondary: 'bg-gray-900 hover:bg-gray-800 text-primary-foreground',
     }
 
-    return `${this.classname ?? baseClasses} ${variantClasses[this.variant]}`
+    return `${this.classname() ?? baseClasses} ${variantClasses[this.variant()]}`
   }
 }
