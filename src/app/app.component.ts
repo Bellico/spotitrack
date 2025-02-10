@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core'
+import { RouterOutlet } from '@angular/router'
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  template: `
+  <main class="bg-gradient-to-b from-gray-900 to-black text-white">
+    <router-outlet></router-outlet>
+  </main>`,
 })
 export class AppComponent {
-  title = 'spotitrack';
+  title = 'spotitrack'
 }

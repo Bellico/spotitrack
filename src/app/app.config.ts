@@ -1,17 +1,17 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
+import { provideRouter } from '@angular/router'
 
 import {
   provideHttpClient,
   withFetch,
   withInterceptors,
-} from '@angular/common/http';
+} from '@angular/common/http'
 import {
   provideClientHydration,
   withEventReplay,
-} from '@angular/platform-browser';
-import { routes } from './app.routes';
-import { spotifyInterceptor } from './interceptors/spotify.interceptors';
+} from '@angular/platform-browser'
+import { routes } from './app.routes'
+import { spotifyInterceptor } from './interceptors/spotify.interceptors'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,4 +20,4 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
   ],
-};
+}

@@ -2,16 +2,9 @@
   <div class="w-full max-w-md text-center">
     @if (currentTrack(); as track) {
     <div>
-      <div
-        class="relative w-64 h-64 mx-auto mb-6 rounded-lg overflow-hidden shadow-2xl"
-      >
-        <img
-          [src]="track.cover"
-          alt="{{ track.title }} by {{ track.artist }}"
-          layout="fill"
-          objectFit="cover"
-          class="rounded-lg"
-        />
+      <div class="relative w-64 h-64 mx-auto mb-6 rounded-lg overflow-hidden shadow-2xl">
+        <img [src]="track.cover" alt="{{ track.title }} by {{ track.artist }}" layout="fill" objectFit="cover"
+          class="rounded-lg" />
       </div>
       <h1 class="text-3xl font-bold mb-2">{{ track.title }}</h1>
       <p class="text-xl text-gray-400">{{ track.artist }}</p>
@@ -24,27 +17,15 @@
 
     <div class="flex flex-col gap-4 mt-8">
       @for (playlist of playlists(); track playlist.id) {
-      <!-- -->
       @let isInPlaylist = isTrackInPlaylist(playlist.id);
-      <div
-        (click)="togglePlaylist(playlist.id)"
-        class="flex items-center justify-between p-4 rounded-lg transition-all cursor-pointer"
-        [ngClass]="{
+      <div (click)="togglePlaylist(playlist.id)"
+        class="flex items-center justify-between p-4 rounded-lg transition-all cursor-pointer" [ngClass]="{
           'bg-primary/20 hover:bg-primary/30': isInPlaylist,
           'bg-gray-800 hover:bg-gray-700': !isInPlaylist
-        }"
-      >
+        }">
         <div class="flex items-center">
-          <lucide-icon
-            *ngIf="isInPlaylist"
-            [img]="Check"
-            class="h-5 w-5 mr-3 text-spotify-green"
-          ></lucide-icon>
-          <lucide-icon
-            *ngIf="!isInPlaylist"
-            [img]="Music2"
-            class="h-5 w-5 mr-3 text-spotify-green"
-          ></lucide-icon>
+          <lucide-icon *ngIf="isInPlaylist" [img]="Check" class="h-5 w-5 mr-3 text-spotify-green"></lucide-icon>
+          <lucide-icon *ngIf="!isInPlaylist" [img]="Music2" class="h-5 w-5 mr-3 text-spotify-green"></lucide-icon>
           <span class="text-lg">{{ playlist.name }}</span>
         </div>
       </div>
@@ -52,9 +33,7 @@
     </div>
     <div class="flex justify-center m-4 gap-2">
       <app-button (click)="logout()" variant="danger">Logout</app-button>
-      <app-button (click)="initializePlayer()" variant="secondary"
-        >Refresh</app-button
-      >
+      <app-button (click)="initializePlayer()" variant="secondary">Refresh</app-button>
     </div>
   </div>
 </div>
