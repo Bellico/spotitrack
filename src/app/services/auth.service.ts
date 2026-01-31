@@ -10,7 +10,7 @@ export class AuthService {
   private readonly localStorage = inject(DOCUMENT)?.defaultView?.localStorage
 
   private tokenSubject = new BehaviorSubject<string | null>(
-    this.getStoredToken()
+    this.getStoredToken(),
   )
 
   setToken(token: string) {

@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core'
 import { map, mergeMap, Observable, of, take } from 'rxjs'
@@ -14,28 +13,9 @@ const LIMIT = 100
   providedIn: 'root',
 })
 export class SpotifyService {
-  private readonly location = inject(DOCUMENT)?.defaultView?.location
-  private clientId = environment.spotify_client_id
   private apiUrl = environment.spotify_api_url
-  private redirectUri = `${this.location?.origin}/callback`
   private http = inject(HttpClient)
   private authService = inject(AuthService)
-
-  getLoginUrl(): string {
-    const scopes = [
-      'user-read-playback-state',
-      'playlist-modify-public',
-      'playlist-modify-private',
-    ]
-
-    return (
-      'https://accounts.spotify.com/authorize?' +
-      `client_id=${this.clientId}&` +
-      `redirect_uri=${encodeURIComponent(this.redirectUri)}&` +
-      `scope=${encodeURIComponent(scopes.join(' '))}&` +
-      'response_type=token'
-    )
-  }
 
   getCurrentTrack(): Observable<TrackDetail | null> {
     return this.http

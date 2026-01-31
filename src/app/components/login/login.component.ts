@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { filter, take } from 'rxjs'
 import { AuthService } from '../../services/auth.service'
-import { SpotifyService } from '../../services/spotify.service'
+import { SpotifyAuthService } from '../../services/spotify-auth.service'
 import { ButtonComponent } from '../button/button.component'
 
 @Component({
@@ -12,7 +12,7 @@ import { ButtonComponent } from '../button/button.component'
   templateUrl: './login.component.html',
 })
 export class LoginComponent implements OnInit {
-  private spotifyService = inject(SpotifyService)
+  private spotifyAuthService = inject(SpotifyAuthService)
   private authService = inject(AuthService)
   private router = inject(Router)
   private readonly location = inject(DOCUMENT)?.defaultView?.location
@@ -22,19 +22,19 @@ export class LoginComponent implements OnInit {
       .isAuthenticated()
       .pipe(
         filter((isAuth) => isAuth),
-        take(1)
+        take(1),
       )
       .subscribe(() => {
         this.router.navigate(['/player'])
       })
   }
 
-  login() {
+  async login() {
     if (!this.location) {
       return
     }
 
-    const loginUrl = this.spotifyService.getLoginUrl()
+    const loginUrl = await this.spotifyAuthService.login()
     this.location.href = loginUrl
   }
 }
