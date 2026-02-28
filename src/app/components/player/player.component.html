@@ -1,39 +1,75 @@
-<div class="flex min-h-screen flex-col items-center p-6">
-  <div class="w-full max-w-md text-center">
+<div class="flex flex-col min-h-screen">
+
+  <!-- Top bar -->
+  <div class="flex justify-between items-center px-4 pt-4 pb-2 shrink-0">
+    <span class="text-lg font-bold text-primary">Spotitrack</span>
+    <div class="flex items-center gap-2">
+      <button
+        (click)="initializePlayer()"
+        class="w-10 h-10 rounded-full bg-gray-800 active:scale-90 transition-transform flex items-center justify-center text-gray-400">
+        <lucide-icon [img]="RefreshCw" [size]="18"></lucide-icon>
+      </button>
+      <button
+        (click)="logout()"
+        class="w-10 h-10 rounded-full bg-gray-800 active:scale-90 transition-transform flex items-center justify-center text-gray-400">
+        <lucide-icon [img]="LogOut" [size]="18"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex flex-col items-center flex-1 px-4 pb-6">
+
     @if (currentTrack(); as track) {
-    <div>
-      <div class="relative w-64 h-64 mx-auto mb-6 rounded-lg overflow-hidden shadow-2xl">
-        <img [src]="track.cover" alt="{{ track.title }} by {{ track.artist }}" layout="fill" objectFit="cover"
-          class="rounded-lg" />
+
+      <!-- Album art with dynamic glow -->
+      <div class="relative flex items-center justify-center my-6">
+        <img [src]="track.cover" aria-hidden="true"
+          class="absolute w-72 h-72 object-cover rounded-full blur-3xl opacity-50 scale-110 pointer-events-none" />
+        <img [src]="track.cover" [alt]="track.title"
+          class="relative w-56 h-56 rounded-2xl object-cover shadow-2xl z-10" />
       </div>
-      <h1 class="text-3xl font-bold mb-2">{{ track.title }}</h1>
-      <p class="text-xl text-gray-400">{{ track.artist }}</p>
-    </div>
+
+      <div class="text-center mb-6 px-4 w-full max-w-md">
+        <h1 class="text-2xl font-bold truncate mb-1">{{ track.title }}</h1>
+        <p class="text-gray-400 truncate">{{ track.artist }}</p>
+      </div>
+
     } @else {
-    <div class="text-center py-12">
-      <p class="text-xl text-zinc-400">No track currently playing</p>
-    </div>
+
+      <div class="flex flex-col items-center justify-center flex-1 gap-4 my-16">
+        <div class="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center">
+          <lucide-icon [img]="Music2" [size]="44" class="text-gray-600" [strokeWidth]="1.5"></lucide-icon>
+        </div>
+        <p class="text-gray-500">No track currently playing</p>
+      </div>
+
     }
 
-    <div class="flex flex-col gap-4 mt-8">
+    <!-- Playlists -->
+    <div class="w-full max-w-md flex flex-col gap-3">
       @for (playlist of playlists(); track playlist.id) {
-      @let isInPlaylist = isTrackInPlaylist(playlist.id);
-      <div (click)="togglePlaylist(playlist.id)"
-        class="flex items-center justify-between p-4 rounded-lg transition-all cursor-pointer" [ngClass]="{
-          'bg-primary/20 hover:bg-primary/30': isInPlaylist,
-          'bg-gray-800 hover:bg-gray-700': !isInPlaylist
-        }">
-        <div class="flex items-center">
-          <lucide-icon *ngIf="isInPlaylist" [img]="Check" class="h-5 w-5 mr-3 text-spotify-green"></lucide-icon>
-          <lucide-icon *ngIf="!isInPlaylist" [img]="Music2" class="h-5 w-5 mr-3 text-spotify-green"></lucide-icon>
-          <span class="text-lg">{{ playlist.name }}</span>
-        </div>
-      </div>
+        @let inPlaylist = isTrackInPlaylist(playlist.id);
+        <button
+          (click)="togglePlaylist(playlist.id)"
+          class="flex items-center justify-between w-full h-16 px-5 rounded-2xl border transition-all duration-150 active:scale-[0.97] cursor-pointer"
+          [class]="inPlaylist
+            ? 'bg-primary/15 border-primary/30 text-primary'
+            : 'bg-gray-800/80 border-transparent text-white'">
+          <div class="flex items-center gap-3 min-w-0">
+            <lucide-icon
+              [img]="inPlaylist ? Check : Music2"
+              [size]="20"
+              [class]="inPlaylist ? 'text-primary shrink-0' : 'text-gray-500 shrink-0'">
+            </lucide-icon>
+            <span class="font-medium truncate">{{ playlist.name }}</span>
+          </div>
+          @if (inPlaylist) {
+            <span class="text-xs text-primary/70 shrink-0 ml-3">Added</span>
+          }
+        </button>
       }
     </div>
-    <div class="flex justify-center m-4 gap-2">
-      <app-button (click)="logout()" variant="danger">Logout</app-button>
-      <app-button (click)="initializePlayer()" variant="secondary">Refresh</app-button>
-    </div>
+
   </div>
 </div>

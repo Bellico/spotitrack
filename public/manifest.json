@@ -2,7 +2,7 @@
   "name": "SpotiTrack",
   "short_name": "SpotiTrack",
   "description": "Spotify Playlist Manager",
-  "theme_color": "#1DB954",
+  "theme_color": "#121212",
   "background_color": "#000000",
   "display": "standalone",
   "scope": "./",

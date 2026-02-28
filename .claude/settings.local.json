@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(dir:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx ng build)"
+    ]
+  }
+}

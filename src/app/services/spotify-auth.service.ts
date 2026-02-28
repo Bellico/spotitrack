@@ -18,7 +18,7 @@ export class SpotifyAuthService {
   /**
    * 🔑 Login Spotify
    */
-  async login(): Promise<string> {
+  async login(customRedirectUri?: string): Promise<string> {
     const verifier = this.generateRandomString(128)
     localStorage.setItem('code_verifier', verifier)
 
@@ -32,11 +32,13 @@ export class SpotifyAuthService {
       'playlist-modify-private',
     ]
 
+    const redirectUri = customRedirectUri ?? this.redirectUri
+
     const params = new HttpParams({
       fromObject: {
         response_type: 'code',
         client_id: this.clientId,
-        redirect_uri: this.redirectUri,
+        redirect_uri: redirectUri,
         code_challenge_method: 'S256',
         code_challenge: challenge,
         scope: scopes.join(' '),
@@ -49,7 +51,7 @@ export class SpotifyAuthService {
   /**
    * 🔄 Échange code → token
    */
-  exchangeCodeForToken(code: string ): Observable<{ access_token: string; refresh_token: string }> {
+  exchangeCodeForToken(code: string, customRedirectUri?: string): Observable<{ access_token: string; refresh_token: string }> {
     const verifier = localStorage.getItem('code_verifier')
 
     if (!verifier) {
@@ -62,7 +64,7 @@ export class SpotifyAuthService {
       .set('client_id', this.clientId)
       .set('grant_type', 'authorization_code')
       .set('code', code)
-      .set('redirect_uri', this.redirectUri)
+      .set('redirect_uri', customRedirectUri ?? this.redirectUri)
       .set('code_verifier', verifier)
 
     return this.http.post(

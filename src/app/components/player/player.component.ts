@@ -1,24 +1,23 @@
-import { CommonModule } from '@angular/common'
 import { Component, DestroyRef, inject, OnInit } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
-import { Check, LucideAngularModule, Music2 } from 'lucide-angular'
+import { Check, LogOut, LucideAngularModule, Music2, RefreshCw } from 'lucide-angular'
 import { interval, tap } from 'rxjs'
 import { filter, mergeAll, switchMap, take } from 'rxjs/operators'
 import { AuthService } from '../../services/auth.service'
 import { PlayerService } from '../../services/player.service'
 import { SpotifyService } from '../../services/spotify.service'
-import { ButtonComponent } from '../button/button.component'
 
 @Component({
   selector: 'app-player',
-  imports: [CommonModule, FormsModule, LucideAngularModule, ButtonComponent],
+  imports: [LucideAngularModule],
   templateUrl: './player.component.html',
 })
 export class PlayerComponent implements OnInit {
   readonly Check = Check
   readonly Music2 = Music2
+  readonly RefreshCw = RefreshCw
+  readonly LogOut = LogOut
 
   private spotifyService = inject(SpotifyService)
   private playerService = inject(PlayerService)

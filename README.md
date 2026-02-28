@@ -13,6 +13,7 @@ spotify_client_id = "To Set"
 ```bash
 ng serve
 ng serve --disable-host-check (ngrok)
+ngrok http 4200
 ```
 
 ## Building

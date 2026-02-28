@@ -7,3 +7,17 @@
   --color-secondary: #1ed760;
   --color-card: #0c0c0c;
 }
+
+html {
+  background-color: #121212;
+  min-height: 100dvh;
+}
+
+body {
+  background-color: #121212;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
