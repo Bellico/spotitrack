@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash 'C:/Dev/spotitrack/.claude/statusline-command.sh'"
+  }
+}
