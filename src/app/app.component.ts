@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router'
   selector: 'app-root',
   imports: [RouterOutlet],
   template: `
-  <main class="bg-gradient-to-b from-gray-900 to-black text-white">
+  <main class="bg-linear-to-b from-gray-900 to-black text-white">
     <router-outlet></router-outlet>
   </main>`,
 })

@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common'
-import { Component, inject, PLATFORM_ID, signal } from '@angular/core'
+import { isPlatformBrowser } from '@angular/common'
+import { Component, inject, PLATFORM_ID, signal, DOCUMENT } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { from, switchMap, take } from 'rxjs'
 import { QrSessionService } from '../../services/qr-session.service'

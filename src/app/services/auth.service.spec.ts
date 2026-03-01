@@ -1,6 +1,7 @@
-import { DOCUMENT } from '@angular/common'
+
 import { TestBed } from '@angular/core/testing'
 import { AuthService } from './auth.service'
+import { DOCUMENT } from '@angular/core'
 
 function makeDocumentWithStorage(store: Record<string, string>) {
   return {

@@ -1,8 +1,9 @@
-import { DOCUMENT } from '@angular/common'
+
 import { TestBed } from '@angular/core/testing'
 import { ActivatedRouteSnapshot, provideRouter, Router, RouterStateSnapshot, UrlTree } from '@angular/router'
 import { AuthGuard } from './auth.guard'
 import { AuthService } from '../services/auth.service'
+import { DOCUMENT } from '@angular/core'
 
 const MOCK_DOCUMENT = {
   defaultView: {

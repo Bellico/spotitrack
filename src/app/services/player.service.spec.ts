@@ -1,9 +1,10 @@
-import { DOCUMENT } from '@angular/common'
+
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TestBed } from '@angular/core/testing'
 import { provideRouter } from '@angular/router'
 import { PlayerService } from './player.service'
+import { DOCUMENT } from '@angular/core'
 
 const MOCK_DOCUMENT = {
   defaultView: {

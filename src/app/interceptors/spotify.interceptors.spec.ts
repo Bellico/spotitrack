@@ -1,6 +1,7 @@
-import { DOCUMENT } from '@angular/common'
+
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http'
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing'
+import { DOCUMENT } from '@angular/core'
 import { TestBed } from '@angular/core/testing'
 import { provideRouter } from '@angular/router'
 import { AuthService } from '../services/auth.service'

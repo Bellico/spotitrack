@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common'
-import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core'
+import { isPlatformBrowser } from '@angular/common'
+import { Component, effect, inject, PLATFORM_ID, signal, DOCUMENT } from '@angular/core'
 import { Router } from '@angular/router'
 import { Headphones, LogIn, LucideAngularModule } from 'lucide-angular'
 import { AuthService } from '../../services/auth.service'
