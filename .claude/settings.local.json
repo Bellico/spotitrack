@@ -4,7 +4,9 @@
       "Bash(npm install:*)",
       "Bash(dir:*)",
       "Bash(npx eslint:*)",
-      "Bash(npx ng build)"
+      "Bash(npx ng build)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

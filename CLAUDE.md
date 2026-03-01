@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Spotitrack is a Spotify playlist manager built with Angular 19, featuring OAuth2 PKCE authentication, real-time track monitoring (10s polling), and playlist management. It supports SSR via `@angular/ssr` and is containerized with Docker.
+Spotitrack is a Spotify playlist manager built with Angular 19, featuring OAuth2 PKCE authentication, real-time track monitoring (10s polling), QR code login via Firebase Realtime Database, and playlist management. It supports SSR via `@angular/ssr` and is containerized with Docker.
 
 ## Commands
 
@@ -25,24 +25,45 @@ docker run --name spotitrack -p 4000:4000 spotitrack
 ## Architecture
 
 **Routes:** `/` (Login) → `/callback` (OAuth redirect) → `/player` (main app, guarded by AuthGuard)
+**QR flow:** `/qr-auth?session=<id>` (mobile) → `/qr-callback` (OAuth redirect mobile)
+
+All routes use **lazy loading** via `loadComponent`.
 
 **Service layer:**
-- `SpotifyAuthService` — OAuth2 Authorization Code + PKCE flow. Generates code verifier/challenge, exchanges authorization code for tokens.
-- `AuthService` — Token management via BehaviorSubject + localStorage. Exposes `isAuthenticated()` and `getToken()` as Observables.
-- `SpotifyService` — Spotify Web API calls (current track, playlists, add/remove tracks). Uses recursive pagination for track fetching (100 per request).
+- `SpotifyAuthService` — OAuth2 Authorization Code + PKCE flow. `login(redirectUri?)` returns the auth URL. `exchangeCodeForToken(code, redirectUri?)` exchanges for tokens.
+- `AuthService` — Token management via **signal** + localStorage. `token` (signal), `isAuthenticated` (computed). No more BehaviorSubject/RxJS.
+- `SpotifyService` — Spotify Web API calls (current track, playlists, add/remove tracks). Uses recursive pagination for track fetching (100 per request). **No Authorization headers** — injected by interceptor.
 - `PlayerService` — Central state via Angular Signals (`currentTrack`, `playlists`, `playlistTracks`). Performs optimistic UI updates on playlist operations.
+- `QrSessionService` — Firebase Realtime Database relay for QR login. SSR-safe (all Firebase ops gated with `isPlatformBrowser`).
+
+**HTTP interceptor** (`interceptors/spotify.interceptors.ts`): Injects `Authorization: Bearer <token>` header on all `api.spotify.com` requests. Catches 401 responses, clears the token, and redirects to home.
 
 **Playlist filtering** (`helpers/playlist.helper.ts`): Filters and sorts user playlists by hardcoded French names ("Sélection", "Trap", "Rap") and by proximity to the current year.
 
-**HTTP interceptor** (`interceptors/spotify.interceptor.ts`): Catches 401 responses, clears the token, and redirects to home.
+## Language
+
+- **All UI labels, messages, and template text must be in English.** (buttons, error messages, status text, placeholders, etc.)
 
 ## Conventions
 
 - **Standalone components** — no NgModules. All components use `standalone: true`.
 - **`inject()` function** for dependency injection (not constructor-based).
-- **Angular Signals** for component/service state; RxJS for async streams and HTTP.
-- **New control flow syntax** — `@if`, `@for` (not `*ngIf`, `*ngFor`).
+- **Angular Signals** for all state — `signal()`, `computed()`. No BehaviorSubject.
+- **`effect()`** in constructors for reactive side-effects (e.g. redirect on auth change).
+- **`takeUntilDestroyed(destroyRef)`** for RxJS subscriptions in components (no manual unsubscribe/OnDestroy).
+- **`afterNextRender()`** for browser-only initialization (avoids SSR issues).
+- **`isPlatformBrowser(PLATFORM_ID)`** guard in constructors for Firebase/localStorage access.
+- **RxJS** only for async streams (HTTP, Firebase `onValue`). Not for state.
+- **New control flow syntax** — `@if`, `@for`, `@let` (not `*ngIf`, `*ngFor`).
 - **Functional guards and interceptors** (`CanActivateFn`, `HttpInterceptorFn`).
+- **Lazy loading** — all routes use `loadComponent` for code splitting.
 - **Style:** 2-space indent, single quotes, no semicolons (enforced by ESLint).
 - **TailwindCSS 4** for styling with a Spotify-themed dark color palette.
-- **Environment config** in `src/environments/` — requires `spotify_client_id`.
+- **Environment config** in `src/environments/environment.ts` — `spotify_client_id` and `firebase` config.
+
+## SSR Considerations
+
+- Firebase SDK must be initialized inside `isPlatformBrowser` guards — it uses browser APIs.
+- `localStorage` access must be guarded similarly.
+- `afterNextRender` ensures QR code generation runs browser-side only.
+- `inject(DOCUMENT)?.defaultView?.localStorage` is the SSR-safe pattern for localStorage.

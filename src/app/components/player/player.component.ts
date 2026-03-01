@@ -25,23 +25,17 @@ export class PlayerComponent implements OnInit {
   private destroyRef = inject(DestroyRef)
   private router = inject(Router)
 
-  get currentTrack() {
-    return this.playerService.currentTrack
-  }
-
-  get playlists() {
-    return this.playerService.playlists
-  }
+  readonly currentTrack = this.playerService.currentTrack
+  readonly playlists = this.playerService.playlists
 
   ngOnInit() {
     interval(10000)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap(() => this.loadCurrentTrack())
+        switchMap(() => this.loadCurrentTrack()),
       )
       .subscribe()
 
-    //Initial load
     this.initializePlayer()
   }
 
@@ -50,30 +44,24 @@ export class PlayerComponent implements OnInit {
     this.loadCurrentTrack().pipe(take(1)).subscribe()
   }
 
-  loadCurrentTrack() {
+  private loadCurrentTrack() {
     return this.spotifyService.getCurrentTrack().pipe(
       filter((track) => track?.id !== this.currentTrack()?.id),
-      tap((track) => {
-        this.currentTrack.set(track)
-      })
+      tap((track) => this.currentTrack.set(track)),
     )
   }
 
-  loadPlaylists() {
+  private loadPlaylists() {
     return this.spotifyService.getUserPlaylists().pipe(
-      tap((playlists) => {
-        this.playlists.set(playlists)
-      }),
-      switchMap((playlists) => {
-        return playlists.map((playlist) =>
+      tap((playlists) => this.playlists.set(playlists)),
+      switchMap((playlists) =>
+        playlists.map((playlist) =>
           this.spotifyService.getTracksInPlaylist(playlist.id).pipe(
-            tap((tracks) => {
-              this.playerService.mergePlaylists(playlist.id, tracks)
-            })
-          )
-        )
-      }),
-      mergeAll()
+            tap((tracks) => this.playerService.mergePlaylists(playlist.id, tracks)),
+          ),
+        ),
+      ),
+      mergeAll(),
     )
   }
 

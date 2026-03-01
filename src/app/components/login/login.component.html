@@ -5,7 +5,8 @@
     <!-- Logo + glow -->
     <div class="relative flex items-center justify-center mb-8">
       <div class="absolute w-64 h-64 rounded-full bg-primary/15 blur-3xl pointer-events-none"></div>
-      <div class="relative w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+      <div
+        class="relative w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
         <lucide-icon [img]="Headphones" class="text-primary" [size]="44" [strokeWidth]="1.5"></lucide-icon>
       </div>
     </div>
@@ -15,8 +16,7 @@
     <p class="text-gray-500 text-base text-center mb-12">Manage your Spotify playlists</p>
 
     <!-- Login button -->
-    <button
-      (click)="login()"
+    <button (click)="login()"
       class="w-full h-14 bg-primary hover:bg-green-400 active:scale-[0.97] transition-all duration-150 rounded-full text-black font-bold text-base flex items-center justify-center gap-2 select-none cursor-pointer">
       <lucide-icon [img]="LogIn" [size]="20"></lucide-icon>
       Login with Spotify
@@ -24,16 +24,16 @@
 
     <!-- QR (desktop only) -->
     @if (isDesktop()) {
-      <div class="mt-10 w-full">
-        <div class="flex items-center gap-3 mb-8">
-          <div class="flex-1 h-px bg-gray-800"></div>
-          <span class="text-gray-600 text-sm whitespace-nowrap">or scan from your phone</span>
-          <div class="flex-1 h-px bg-gray-800"></div>
-        </div>
-        <div class="flex justify-center">
-          <app-qr-login />
-        </div>
+    <div class="mt-10 w-full">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="flex-1 h-px bg-gray-800"></div>
+        <span class="text-gray-600 text-sm whitespace-nowrap">or scan from your phone</span>
+        <div class="flex-1 h-px bg-gray-800"></div>
       </div>
+      <div class="flex justify-center">
+        <app-qr-login />
+      </div>
+    </div>
     }
 
   </div>

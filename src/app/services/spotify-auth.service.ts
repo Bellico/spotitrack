@@ -10,54 +10,42 @@ import { environment } from '../../environments/environment'
 export class SpotifyAuthService {
   private authUrl = 'https://accounts.spotify.com/authorize'
   private tokenUrl = 'https://accounts.spotify.com/api/token'
-  private readonly location = inject(DOCUMENT)?.defaultView?.location
+  private readonly win = inject(DOCUMENT)?.defaultView
+  private readonly localStorage = this.win?.localStorage
+  private readonly location = this.win?.location
   private clientId = environment.spotify_client_id
   private redirectUri = `${this.location?.origin}/callback`
   private http = inject(HttpClient)
 
-  /**
-   * 🔑 Login Spotify
-   */
   async login(customRedirectUri?: string): Promise<string> {
     const verifier = this.generateRandomString(128)
-    localStorage.setItem('code_verifier', verifier)
 
-    const challenge = await this.sha256(verifier).then((hash) =>
-      this.base64encode(hash),
-    )
+    this.localStorage?.setItem('code_verifier', verifier)
 
-    const scopes = [
-      'user-read-playback-state',
-      'playlist-modify-public',
-      'playlist-modify-private',
-    ]
-
-    const redirectUri = customRedirectUri ?? this.redirectUri
+    const challenge = await this.sha256(verifier).then((hash) => this.base64encode(hash))
 
     const params = new HttpParams({
       fromObject: {
         response_type: 'code',
         client_id: this.clientId,
-        redirect_uri: redirectUri,
+        redirect_uri: customRedirectUri ?? this.redirectUri,
         code_challenge_method: 'S256',
         code_challenge: challenge,
-        scope: scopes.join(' '),
+        scope: 'user-read-playback-state playlist-modify-public playlist-modify-private',
       },
     })
 
     return `${this.authUrl}?${params.toString()}`
   }
 
-  /**
-   * 🔄 Échange code → token
-   */
-  exchangeCodeForToken(code: string, customRedirectUri?: string): Observable<{ access_token: string; refresh_token: string }> {
-    const verifier = localStorage.getItem('code_verifier')
+  exchangeCodeForToken(
+    code: string,
+    customRedirectUri?: string,
+  ): Observable<{ access_token: string; refresh_token: string }> {
+    const verifier = this.localStorage?.getItem('code_verifier')
 
     if (!verifier) {
-      return throwError(
-        () => new Error('Code verifier not found in localStorage'),
-      )
+      return throwError(() => new Error('Code verifier not found in localStorage'))
     }
 
     const body = new HttpParams()
@@ -67,27 +55,21 @@ export class SpotifyAuthService {
       .set('redirect_uri', customRedirectUri ?? this.redirectUri)
       .set('code_verifier', verifier)
 
-    return this.http.post(
-      this.tokenUrl,
-      body.toString(),
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      },
-    ) as Observable<{ access_token: string; refresh_token: string }>
+    return this.http.post(this.tokenUrl, body.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }) as Observable<{ access_token: string; refresh_token: string }>
   }
 
   private generateRandomString(length: number): string {
-    const possible ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
     return Array.from(crypto.getRandomValues(new Uint8Array(length)))
       .map((x) => possible[x % possible.length])
       .join('')
   }
 
   private async sha256(plain: string): Promise<ArrayBuffer> {
-    const encoder = new TextEncoder()
-    return crypto.subtle.digest('SHA-256', encoder.encode(plain))
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(plain))
   }
 
   private base64encode(buffer: ArrayBuffer): string {

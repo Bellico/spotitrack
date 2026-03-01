@@ -16,29 +16,53 @@ export function sortByPriority(playlists: Playlist[]): Playlist[] {
           item.name.includes(playlistTrap) ||
           item.name.includes(String(currentYear)) ||
           item.name.includes(String(lastYear)) ||
-          item.name.includes(String(lastPrevYear))
+          item.name.includes(String(lastPrevYear)),
     )
     .sort((a: Playlist, b: Playlist) => {
       // Sélection en premier
-      if (a.name.includes(playlistSelection)) return -1
-      if (b.name.includes(playlistSelection)) return 1
+      if (a.name.includes(playlistSelection)) {
+        return -1
+      }
+
+      if (b.name.includes(playlistSelection)) {
+        return 1
+      }
 
       // Trap en second
-      if (a.name.includes(playlistTrap)) return -1
-      if (b.name.includes(playlistTrap)) return 1
+      if (a.name.includes(playlistTrap)) {
+        return -1
+      }
+
+      if (b.name.includes(playlistTrap)) {
+        return 1
+      }
 
       // Rap en troisième
-      if (a.name.includes(playlistRap) && a.name.includes(`${currentYear}`))
+      if (a.name.includes(playlistRap) && a.name.includes(`${currentYear}`)) {
         return -1
-      if (b.name.includes(playlistRap)) return 1
+      }
+
+      if (b.name.includes(playlistRap)) {
+        return 1
+      }
 
       // Année courante
-      if (a.name.includes(`${currentYear}`)) return -1
-      if (b.name.includes(`${currentYear}`)) return 1
+      if (a.name.includes(`${currentYear}`)) {
+        return -1
+      }
+
+      if (b.name.includes(`${currentYear}`)) {
+        return 1
+      }
 
       // Année précédente
-      if (a.name.includes(`${lastYear}`)) return -1
-      if (b.name.includes(`${lastYear}`)) return 1
+      if (a.name.includes(`${lastYear}`)) {
+        return -1
+      }
+
+      if (b.name.includes(`${lastYear}`)) {
+        return 1
+      }
 
       return 0
     })

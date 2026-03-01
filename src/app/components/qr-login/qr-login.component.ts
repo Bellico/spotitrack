@@ -1,7 +1,7 @@
-import { afterNextRender, Component, inject, OnDestroy, signal } from '@angular/core'
+import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { Router } from '@angular/router'
 import { toDataURL } from 'qrcode'
-import { Subscription } from 'rxjs'
 import { AuthService } from '../../services/auth.service'
 import { QrSessionService } from '../../services/qr-session.service'
 
@@ -18,24 +18,19 @@ import { QrSessionService } from '../../services/qr-session.service'
     </div>
   `,
 })
-export class QrLoginComponent implements OnDestroy {
+export class QrLoginComponent {
   private qrSessionService = inject(QrSessionService)
   private authService = inject(AuthService)
   private router = inject(Router)
+  private destroyRef = inject(DestroyRef)
 
-  qrCodeUrl = signal<string | null>(null)
-
-  private subscription?: Subscription
+  readonly qrCodeUrl = signal<string | null>(null)
 
   constructor() {
-    afterNextRender(() => {
-      this.generateQrCode()
-    })
+    afterNextRender(() => this.generateQrCode())
   }
 
   async generateQrCode() {
-    this.subscription?.unsubscribe()
-
     const sessionId = this.qrSessionService.createSession()
     const loginUrl = `${window.location.origin}/qr-auth?session=${sessionId}`
 
@@ -44,18 +39,16 @@ export class QrLoginComponent implements OnDestroy {
       margin: 2,
       color: { dark: '#ffffff', light: '#121212' },
     })
+
     this.qrCodeUrl.set(dataUrl)
 
-    this.subscription = this.qrSessionService.listenSession(sessionId).subscribe({
-      next: (token) => {
+    this.qrSessionService
+      .listenSession(sessionId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((token) => {
         this.authService.setToken(token)
         this.qrSessionService.deleteSession(sessionId)
         this.router.navigate(['/player'])
-      },
-    })
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe()
+      })
   }
 }

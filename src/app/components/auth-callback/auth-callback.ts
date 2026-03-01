@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { take } from 'rxjs'
+import { EMPTY, switchMap, take } from 'rxjs'
 import { AuthService } from '../../services/auth.service'
 import { SpotifyAuthService } from '../../services/spotify-auth.service'
 
@@ -16,21 +16,23 @@ export class AuthCallbackComponent {
 
   constructor() {
     this.route.queryParamMap
-      .pipe(take(1))
-      .subscribe(params => {
-        const code = params.get('code')
-        // const code = this.route.snapshot.queryParamMap.get('code')
+      .pipe(
+        take(1),
+        switchMap((params) => {
+          const code = params.get('code')
 
-        if (code) {
-          this.spotifyAuth.exchangeCodeForToken(code).subscribe((token) => {
-            console.log('Received token:', token)
-            this.authService.setToken(token.access_token)
-            // localStorage.setItem('spotify_refresh_token', token.refresh_token);
-            this.router.navigate(['/player'])
-          })
-        } else {
-          this.router.navigate(['/'])
-        }
+          if (!code) {
+            this.router.navigate(['/'])
+
+            return EMPTY
+          }
+
+          return this.spotifyAuth.exchangeCodeForToken(code)
+        }),
+      )
+      .subscribe((token) => {
+        this.authService.setToken(token.access_token)
+        this.router.navigate(['/player'])
       })
   }
 }

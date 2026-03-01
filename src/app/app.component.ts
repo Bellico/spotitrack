@@ -10,5 +10,5 @@ import { RouterOutlet } from '@angular/router'
   </main>`,
 })
 export class AppComponent {
-  title = 'spotitrack'
+  readonly title = 'spotitrack'
 }

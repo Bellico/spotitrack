@@ -1,7 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common'
 import { Component, inject, PLATFORM_ID, signal } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { take } from 'rxjs'
+import { EMPTY, from, switchMap, take, map } from 'rxjs'
 import { QrSessionService } from '../../services/qr-session.service'
 import { SpotifyAuthService } from '../../services/spotify-auth.service'
 
@@ -14,7 +14,7 @@ import { SpotifyAuthService } from '../../services/spotify-auth.service'
         @if (error()) {
           <p class="text-red-400 text-lg">{{ error() }}</p>
         } @else {
-          <p class="text-gray-400 text-lg">Redirection vers Spotify...</p>
+          <p class="text-gray-400 text-lg">Redirecting to Spotify...</p>
         }
       </div>
     </div>
@@ -27,31 +27,46 @@ export class QrAuthComponent {
   private readonly win = inject(DOCUMENT)?.defaultView
   private readonly location = this.win?.location
 
-  error = signal<string | null>(null)
+  readonly error = signal<string | null>(null)
 
   constructor() {
-    if (!isPlatformBrowser(inject(PLATFORM_ID))) return
+    if (!isPlatformBrowser(inject(PLATFORM_ID))) {
+      return
+    }
 
-    this.route.queryParamMap.pipe(take(1)).subscribe(async (params) => {
-      const sessionId = params.get('session')
+    this.route.queryParamMap
+      .pipe(
+        take(1),
+        switchMap((params) => {
+          const sessionId = params.get('session')
 
-      if (!sessionId) {
-        this.error.set('Session invalide.')
-        return
-      }
+          if (!sessionId) {
+            this.error.set('Invalid session.')
 
-      const exists = await this.qrSessionService.sessionExists(sessionId)
-      if (!exists) {
-        this.error.set('Session expirée ou invalide.')
-        return
-      }
+            return EMPTY
+          }
 
-      this.win?.localStorage?.setItem('qr_session_id', sessionId)
+          return from(this.qrSessionService.sessionExists(sessionId)).pipe(
+            map((exists) => ({ exists, sessionId })),
+          )
+        }),
+        switchMap(({ exists, sessionId }) => {
+          if (!exists) {
+            this.error.set('Session expired or invalid.')
 
-      const redirectUri = `${this.location?.origin}/qr-callback`
-      const loginUrl = await this.spotifyAuthService.login(redirectUri)
+            return EMPTY
+          }
 
-      if (this.location) this.location.href = loginUrl
-    })
+          this.win?.localStorage?.setItem('qr_session_id', sessionId)
+          const redirectUri = `${this.location?.origin}/qr-callback`
+
+          return from(this.spotifyAuthService.login(redirectUri))
+        }),
+      )
+      .subscribe((loginUrl) => {
+        if (this.location) {
+          this.location.href = loginUrl
+        }
+      })
   }
 }

@@ -1,7 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common'
-import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core'
+import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core'
 import { Router } from '@angular/router'
-import { filter, take } from 'rxjs'
 import { Headphones, LogIn, LucideAngularModule } from 'lucide-angular'
 import { AuthService } from '../../services/auth.service'
 import { SpotifyAuthService } from '../../services/spotify-auth.service'
@@ -12,7 +11,7 @@ import { QrLoginComponent } from '../qr-login/qr-login.component'
   imports: [LucideAngularModule, QrLoginComponent],
   templateUrl: './login.component.html',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   private spotifyAuthService = inject(SpotifyAuthService)
   private authService = inject(AuthService)
   private router = inject(Router)
@@ -20,25 +19,18 @@ export class LoginComponent implements OnInit {
 
   readonly Headphones = Headphones
   readonly LogIn = LogIn
-
-  isDesktop = signal(false)
+  readonly isDesktop = signal(
+    isPlatformBrowser(inject(PLATFORM_ID))
+      ? !/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+      : false,
+  )
 
   constructor() {
-    if (isPlatformBrowser(inject(PLATFORM_ID))) {
-      this.isDesktop.set(!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent))
-    }
-  }
-
-  ngOnInit() {
-    this.authService
-      .isAuthenticated()
-      .pipe(
-        filter((isAuth) => isAuth),
-        take(1),
-      )
-      .subscribe(() => {
+    effect(() => {
+      if (this.authService.isAuthenticated()) {
         this.router.navigate(['/player'])
-      })
+      }
+    })
   }
 
   async login() {
@@ -47,6 +39,7 @@ export class LoginComponent implements OnInit {
     }
 
     const loginUrl = await this.spotifyAuthService.login()
+
     this.location.href = loginUrl
   }
 }

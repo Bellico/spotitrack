@@ -1,15 +1,32 @@
 import { Routes } from '@angular/router'
-import { AuthCallbackComponent } from './components/auth-callback/auth-callback'
-import { LoginComponent } from './components/login/login.component'
-import { PlayerComponent } from './components/player/player.component'
-import { QrAuthComponent } from './components/qr-auth/qr-auth.component'
-import { QrCallbackComponent } from './components/qr-callback/qr-callback.component'
 import { AuthGuard } from './guards/auth.guard'
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'callback', component: AuthCallbackComponent },
-  { path: 'qr-auth', component: QrAuthComponent },
-  { path: 'qr-callback', component: QrCallbackComponent },
-  { path: 'player', component: PlayerComponent, canActivate: [AuthGuard] },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./components/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'callback',
+    loadComponent: () =>
+      import('./components/auth-callback/auth-callback').then((m) => m.AuthCallbackComponent),
+  },
+  {
+    path: 'qr-auth',
+    loadComponent: () =>
+      import('./components/qr-auth/qr-auth.component').then((m) => m.QrAuthComponent),
+  },
+  {
+    path: 'qr-callback',
+    loadComponent: () =>
+      import('./components/qr-callback/qr-callback.component').then((m) => m.QrCallbackComponent),
+  },
+  {
+    path: 'player',
+    loadComponent: () =>
+      import('./components/player/player.component').then((m) => m.PlayerComponent),
+    canActivate: [AuthGuard],
+  },
+  { path: '**', redirectTo: '' },
 ]

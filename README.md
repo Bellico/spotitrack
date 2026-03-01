@@ -29,7 +29,7 @@ node .\dist\spotitrack\server\server.mjs
 
 ```bash
 docker build -t bellico/spotitrack:latest .
-docker run --name spotitrack -p 4000:4000 spotitrack
+docker run --name spotitrack -p 4000:4000 bellico/spotitrack
 # docker push bellico/spotitrack:latest
 ```
 
