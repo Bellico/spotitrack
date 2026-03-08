@@ -46,7 +46,7 @@ export class QrLoginComponent {
       .listenSession(sessionId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((token) => {
-        this.authService.setToken(token)
+        this.authService.setTokenData(token)
         this.qrSessionService.deleteSession(sessionId)
         this.router.navigate(['/player'])
       })

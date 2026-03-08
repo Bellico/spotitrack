@@ -37,7 +37,7 @@ describe('AuthGuard', () => {
   }
 
   it('should allow access when authenticated', () => {
-    authService.setToken('token')
+    authService.setTokenData({ access_token: 'token', refresh_token: 'refresh', expires_in: 3600 })
     expect(runGuard()).toBeTrue()
   })
 

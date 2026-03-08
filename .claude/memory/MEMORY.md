@@ -48,6 +48,21 @@ npm run test       # Karma + Jasmine + Chrome
 npm run build      # Production SSR build
 ```
 
+## Quality Workflow (ALWAYS RUN AFTER CODE CHANGES)
+After every code modification, run these 3 phases automatically:
+1. `/code-reviewer` — git diff, remove unused imports, fix Angular convention violations
+2. `/fix-lint` — `npm run lint -- --fix`, fix remaining errors manually
+3. `/run-tests` — `ng test --watch=false --browsers=ChromeHeadless`, fix failures
+
+Use `/quality-check` to chain all three. Commands are in `.claude/commands/`.
+
+## Token Refresh (added 2026-03-08)
+`AuthService` now stores `refresh_token` + `expires_at` in localStorage (`setTokenData()`).
+`SpotifyAuthService` has `refreshAccessToken(refreshToken)`.
+`AuthGuard` proactively refreshes expired tokens before allowing navigation.
+Interceptor retries 401s with a fresh token before redirecting to login.
+QR flow passes full token data `{access_token, refresh_token, expires_in}` via Firebase.
+
 ## User Preferences
 - Communicate concisely
 - No emojis unless asked

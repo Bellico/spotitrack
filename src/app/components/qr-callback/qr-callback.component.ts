@@ -1,13 +1,12 @@
 import { isPlatformBrowser } from '@angular/common'
-import { Component, inject, PLATFORM_ID, signal, DOCUMENT } from '@angular/core'
+import { Component, DOCUMENT, inject, PLATFORM_ID, signal } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { from, switchMap, take } from 'rxjs'
+import { catchError, EMPTY, from, switchMap, take, tap } from 'rxjs'
 import { QrSessionService } from '../../services/qr-session.service'
 import { SpotifyAuthService } from '../../services/spotify-auth.service'
 
 @Component({
   selector: 'app-qr-callback',
-  standalone: true,
   template: `
     <div class="flex flex-col items-center justify-center min-h-screen">
       <div class="p-8 rounded-lg shadow-xl bg-card max-w-md text-center">
@@ -39,28 +38,42 @@ export class QrCallbackComponent {
       return
     }
 
-    this.route.queryParamMap.pipe(take(1)).subscribe((params) => {
-      const code = params.get('code')
-      const sessionId = this.win?.localStorage?.getItem('qr_session_id') ?? null
+    const sessionId = this.qrSessionService.getQrSessionId()
 
-      if (!code || !sessionId) {
-        this.router.navigate(['/'])
+    if (!sessionId) {
+      this.router.navigate(['/'])
 
-        return
-      }
+      return
+    }
 
-      const redirectUri = `${this.location?.origin}/qr-callback`
+    this.route.queryParamMap
+      .pipe(
+        take(1),
+        switchMap(params => {
+          const code = params.get('code')
 
-      this.spotifyAuth
-        .exchangeCodeForToken(code, redirectUri)
-        .pipe(switchMap((token) => from(this.qrSessionService.completeSession(sessionId, token.access_token))))
-        .subscribe({
-          next: () => {
-            this.win?.localStorage?.removeItem('qr_session_id')
-            this.success.set(true)
-          },
-          error: () => this.error.set('Authentication failed.'),
-        })
-    })
+          if (!code || !sessionId) {
+            this.router.navigate(['/'])
+
+            return EMPTY
+          }
+
+          const redirectUri = `${this.location?.origin}/qr-callback`
+
+          return this.spotifyAuth.exchangeCodeForToken(code, redirectUri)
+        }),
+        switchMap(token =>
+          from(this.qrSessionService.completeSession(sessionId, token))),
+        tap(() => {
+          this.qrSessionService.clearQrSessionId()
+          this.success.set(true)
+        }),
+        catchError(error => {
+          this.qrSessionService.clearQrSessionId()
+          this.error.set(`Authentication failed. ${error.toString()}`)
+
+          return EMPTY
+        }),
+      ).subscribe()
   }
 }

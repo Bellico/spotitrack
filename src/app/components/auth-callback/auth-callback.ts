@@ -31,7 +31,7 @@ export class AuthCallbackComponent {
         }),
       )
       .subscribe((token) => {
-        this.authService.setToken(token.access_token)
+        this.authService.setTokenData(token)
         this.router.navigate(['/player'])
       })
   }

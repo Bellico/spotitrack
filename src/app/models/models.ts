@@ -14,3 +14,17 @@ export type TrackDetail = Track & {
   artist: string
   cover: string
 }
+
+export interface QrSession {
+  status: 'pending' | 'done'
+  access_token?: string
+  refresh_token?: string
+  expires_in?: number
+  createdAt?: number
+}
+
+export interface TokenData {
+  access_token: string
+  refresh_token: string
+  expires_in: number
+}

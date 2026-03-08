@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common'
-import { Component, inject, PLATFORM_ID, signal, DOCUMENT } from '@angular/core'
+import { Component, DOCUMENT, inject, PLATFORM_ID, signal } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { EMPTY, from, switchMap, take, map } from 'rxjs'
+import { EMPTY, from, map, switchMap, take } from 'rxjs'
 import { QrSessionService } from '../../services/qr-session.service'
 import { SpotifyAuthService } from '../../services/spotify-auth.service'
 
@@ -57,7 +57,7 @@ export class QrAuthComponent {
             return EMPTY
           }
 
-          this.win?.localStorage?.setItem('qr_session_id', sessionId)
+          this.qrSessionService.setQrSessionId(sessionId)
           const redirectUri = `${this.location?.origin}/qr-callback`
 
           return from(this.spotifyAuthService.login(redirectUri))

@@ -61,6 +61,16 @@ All routes use **lazy loading** via `loadComponent`.
 - **TailwindCSS 4** for styling with a Spotify-themed dark color palette.
 - **Environment config** in `src/environments/environment.ts` — `spotify_client_id` and `firebase` config.
 
+## Quality Workflow (MANDATORY)
+
+After **every code modification**, automatically run these three phases in order — no exceptions:
+
+1. **`/code-reviewer`** — review changed files (`git diff HEAD --name-only`), remove unused imports/variables, fix convention violations, simplify over-engineered code
+2. **`/fix-lint`** — run `npm run lint -- --fix`, then manually fix any remaining ESLint errors, confirm zero errors
+3. **`/run-tests`** — run `ng test --watch=false --browsers=ChromeHeadless`, fix any failing tests, confirm all pass
+
+Use `/quality-check` to run all three phases at once. These phases can also be invoked individually.
+
 ## SSR Considerations
 
 - Firebase SDK must be initialized inside `isPlatformBrowser` guards — it uses browser APIs.

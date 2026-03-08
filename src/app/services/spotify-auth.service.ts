@@ -1,8 +1,9 @@
 
 import { HttpClient, HttpParams } from '@angular/common/http'
-import { inject, Injectable, DOCUMENT } from '@angular/core'
+import { DOCUMENT, inject, Injectable } from '@angular/core'
 import { Observable, throwError } from 'rxjs'
 import { environment } from '../../environments/environment'
+import { TokenData } from '../models/models'
 
 @Injectable({
   providedIn: 'root',
@@ -38,10 +39,23 @@ export class SpotifyAuthService {
     return `${this.authUrl}?${params.toString()}`
   }
 
+  refreshAccessToken(
+    refreshToken: string,
+  ): Observable<TokenData> {
+    const body = new HttpParams()
+      .set('client_id', this.clientId)
+      .set('grant_type', 'refresh_token')
+      .set('refresh_token', refreshToken)
+
+    return this.http.post(this.tokenUrl, body.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }) as Observable<{ access_token: string; refresh_token: string; expires_in: number }>
+  }
+
   exchangeCodeForToken(
     code: string,
     customRedirectUri?: string,
-  ): Observable<{ access_token: string; refresh_token: string }> {
+  ): Observable<TokenData> {
     const verifier = this.localStorage?.getItem('code_verifier')
 
     if (!verifier) {
@@ -57,7 +71,7 @@ export class SpotifyAuthService {
 
     return this.http.post(this.tokenUrl, body.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    }) as Observable<{ access_token: string; refresh_token: string }>
+    }) as Observable<{ access_token: string; refresh_token: string; expires_in: number }>
   }
 
   private generateRandomString(length: number): string {

@@ -39,7 +39,7 @@ describe('spotifyInterceptor', () => {
   afterEach(() => httpMock.verify())
 
   it('should add Authorization header for api.spotify.com requests', () => {
-    authService.setToken('my-token')
+    authService.setTokenData({ access_token: 'my-token', refresh_token: 'refresh', expires_in: 3600 })
     httpClient.get('https://api.spotify.com/v1/me').subscribe()
 
     const req = httpMock.expectOne('https://api.spotify.com/v1/me')
@@ -58,7 +58,7 @@ describe('spotifyInterceptor', () => {
   })
 
   it('should NOT add Authorization header for non-Spotify API URLs', () => {
-    authService.setToken('my-token')
+    authService.setTokenData({ access_token: 'my-token', refresh_token: 'refresh', expires_in: 3600 })
     httpClient.get('https://accounts.spotify.com/api/token').subscribe()
 
     const req = httpMock.expectOne('https://accounts.spotify.com/api/token')
@@ -68,7 +68,7 @@ describe('spotifyInterceptor', () => {
   })
 
   it('should clear token and navigate on 401', () => {
-    authService.setToken('expired-token')
+    authService.setTokenData({ access_token: 'expired-token', refresh_token: 'refresh', expires_in: 3600 })
     httpClient.get('https://api.spotify.com/v1/me').subscribe({ error: () => { /* expected */ } })
 
     const req = httpMock.expectOne('https://api.spotify.com/v1/me')
