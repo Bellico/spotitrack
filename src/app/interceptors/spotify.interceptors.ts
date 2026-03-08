@@ -33,7 +33,7 @@ export function spotifyInterceptor(req: HttpRequest<unknown>, next: HttpHandlerF
 
       if (authService.isRefreshing) {
         return authService.refreshToken$.pipe(
-          filter(t => !!t),
+          filter((t): t is string => t !== null),
           take(1),
           switchMap((newToken) => next(req.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } }))),
         )

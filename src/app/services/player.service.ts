@@ -58,6 +58,20 @@ export class PlayerService {
       .subscribe()
   }
 
+  removeFromAllPlaylists() {
+    const currentTrack = this.currentTrack()
+
+    if (!currentTrack) {
+      return
+    }
+
+    this.playlists().forEach((playlist) => {
+      if (this.isTrackInPlaylist(playlist.id)) {
+        this.removeFromPlaylist(playlist.id)
+      }
+    })
+  }
+
   removeFromPlaylist(playlistId: string) {
     const currentTrack = this.currentTrack()
 

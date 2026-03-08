@@ -32,7 +32,7 @@ export class SpotifyAuthService {
         redirect_uri: customRedirectUri ?? this.redirectUri,
         code_challenge_method: 'S256',
         code_challenge: challenge,
-        scope: 'user-read-playback-state playlist-modify-public playlist-modify-private',
+        scope: 'user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private',
       },
     })
 

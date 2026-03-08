@@ -7,7 +7,9 @@
       "Bash(npx ng build)",
       "Bash(npm run:*)",
       "Bash(npm test:*)",
-      "Bash(ng test:*)"
+      "Bash(ng test:*)",
+      "Bash(git:*)",
+      "Bash(ls:*)"
     ]
   }
 }

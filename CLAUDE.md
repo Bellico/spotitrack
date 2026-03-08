@@ -46,7 +46,7 @@ All routes use **lazy loading** via `loadComponent`.
 
 ## Conventions
 
-- **Standalone components** — no NgModules. All components use `standalone: true`.
+- **Standalone components** — no NgModules. `standalone: true` is the default in Angular 19+, do not add it explicitly.
 - **`inject()` function** for dependency injection (not constructor-based).
 - **Angular Signals** for all state — `signal()`, `computed()`. No BehaviorSubject.
 - **`effect()`** in constructors for reactive side-effects (e.g. redirect on auth change).

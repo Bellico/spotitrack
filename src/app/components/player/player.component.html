@@ -2,17 +2,15 @@
 
   <!-- Top bar -->
   <div class="flex justify-between items-center px-4 pt-4 pb-2 shrink-0">
-    <span class="text-lg font-bold text-primary">Spotitrack</span>
+    <span class="text-xl font-bold text-primary">Spotitrack</span>
     <div class="flex items-center gap-2">
-      <button
-        (click)="initializePlayer()"
-        class="w-10 h-10 rounded-full bg-gray-800 active:scale-90 transition-transform flex items-center justify-center text-gray-400">
-        <lucide-icon [img]="RefreshCw" [size]="18"></lucide-icon>
+      <button (click)="initializePlayer()"
+        class="w-12 h-12 rounded-full bg-gray-800 active:scale-90 transition-transform flex items-center justify-center text-gray-400">
+        <lucide-icon [img]="RefreshCw" [size]="22"></lucide-icon>
       </button>
-      <button
-        (click)="logout()"
-        class="w-10 h-10 rounded-full bg-gray-800 active:scale-90 transition-transform flex items-center justify-center text-gray-400">
-        <lucide-icon [img]="LogOut" [size]="18"></lucide-icon>
+      <button (click)="logout()"
+        class="w-12 h-12 rounded-full bg-gray-800 active:scale-90 transition-transform flex items-center justify-center text-gray-400">
+        <lucide-icon [img]="LogOut" [size]="22"></lucide-icon>
       </button>
     </div>
   </div>
@@ -22,52 +20,56 @@
 
     @if (currentTrack(); as track) {
 
-      <!-- Album art with dynamic glow -->
-      <div class="relative flex items-center justify-center my-6">
-        <img [src]="track.cover" aria-hidden="true"
-          class="absolute w-72 h-72 object-cover rounded-full blur-3xl opacity-50 scale-110 pointer-events-none" />
-        <img [src]="track.cover" [alt]="track.title"
-          class="relative w-56 h-56 rounded-2xl object-cover shadow-2xl z-10" />
-      </div>
+    <!-- Album art with dynamic glow -->
+    <div class="relative flex items-center justify-center my-6">
+      <img [src]="track.cover" aria-hidden="true"
+        class="absolute w-72 h-72 object-cover rounded-full blur-3xl opacity-50 scale-110 pointer-events-none" />
+      <img [src]="track.cover" [alt]="track.title"
+        class="relative w-56 h-56 rounded-2xl object-cover shadow-2xl z-10" />
+    </div>
 
-      <div class="text-center mb-6 px-4 w-full max-w-md">
-        <h1 class="text-2xl font-bold truncate mb-1">{{ track.title }}</h1>
-        <p class="text-gray-400 truncate">{{ track.artist }}</p>
-      </div>
+    <div class="text-center mb-5 px-4 w-full max-w-md">
+      <h1 class="text-2xl font-bold truncate mb-1">{{ track.title }}</h1>
+      <p class="text-lg text-gray-400 truncate">{{ track.artist }}</p>
+    </div>
+
+    <!-- Skip & remove button -->
+    <button (click)="removeAndSkipToNext()"
+      class="flex items-center justify-center gap-2.5 w-full max-w-md h-14 mb-6 rounded-2xl bg-red-500 text-white font-bold text-base active:scale-95 transition-transform shadow-lg shadow-red-500/30 cursor-pointer hover:bg-red-400">
+      <lucide-icon [img]="CircleSlash" [size]="20" class="shrink-0"></lucide-icon>
+      Pass and skip
+    </button>
 
     } @else {
 
-      <div class="flex flex-col items-center justify-center flex-1 gap-4 my-16">
-        <div class="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center">
-          <lucide-icon [img]="Music2" [size]="44" class="text-gray-600" [strokeWidth]="1.5"></lucide-icon>
-        </div>
-        <p class="text-gray-500">No track currently playing</p>
+    <div class="flex flex-col items-center justify-center flex-1 gap-4 my-16">
+      <div class="w-24 h-24 rounded-full bg-gray-800 flex items-center justify-center">
+        <lucide-icon [img]="Music2" [size]="44" class="text-gray-600" [strokeWidth]="1.5"></lucide-icon>
       </div>
+      <p class="text-lg text-gray-500">No track currently playing</p>
+    </div>
 
     }
 
     <!-- Playlists -->
     <div class="w-full max-w-md flex flex-col gap-3">
       @for (playlist of playlists(); track playlist.id) {
-        @let inPlaylist = isTrackInPlaylist(playlist.id);
-        <button
-          (click)="togglePlaylist(playlist.id)"
-          class="flex items-center justify-between w-full h-16 px-5 rounded-2xl border transition-all duration-150 active:scale-[0.97] cursor-pointer"
-          [class]="inPlaylist
+      @let inPlaylist = isTrackInPlaylist(playlist.id);
+      <button (click)="togglePlaylist(playlist.id)"
+        class="flex items-center justify-between w-full h-16 px-5 rounded-2xl border transition-all duration-150 active:scale-[0.97] cursor-pointer"
+        [class]="inPlaylist
             ? 'bg-primary/15 border-primary/30 text-primary'
             : 'bg-gray-800/80 border-transparent text-white'">
-          <div class="flex items-center gap-3 min-w-0">
-            <lucide-icon
-              [img]="inPlaylist ? Check : Music2"
-              [size]="20"
-              [class]="inPlaylist ? 'text-primary shrink-0' : 'text-gray-500 shrink-0'">
-            </lucide-icon>
-            <span class="font-medium truncate">{{ playlist.name }}</span>
-          </div>
-          @if (inPlaylist) {
-            <span class="text-xs text-primary/70 shrink-0 ml-3">Added</span>
-          }
-        </button>
+        <div class="flex items-center gap-3 min-w-0">
+          <lucide-icon [img]="inPlaylist ? Check : Music2" [size]="22"
+            [class]="inPlaylist ? 'text-primary shrink-0' : 'text-gray-500 shrink-0'">
+          </lucide-icon>
+          <span class="text-lg font-medium truncate">{{ playlist.name }}</span>
+        </div>
+        @if (inPlaylist) {
+        <span class="text-sm text-primary/70 shrink-0 ml-3">Added</span>
+        }
+      </button>
       }
     </div>
 

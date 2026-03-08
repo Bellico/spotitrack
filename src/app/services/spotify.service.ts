@@ -80,4 +80,8 @@ export class SpotifyService {
       body: { tracks: [{ uri: trackUri }] },
     })
   }
+
+  skipToNext(): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/me/player/next`, {})
+  }
 }

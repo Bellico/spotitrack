@@ -13,7 +13,7 @@ export class QrSessionService {
   private qrSessionKey = 'qr_session_id'
   private readonly localStorage = inject(DOCUMENT)?.defaultView?.localStorage
 
-  private platformId = inject(PLATFORM_ID)
+  private readonly platformId = inject(PLATFORM_ID)
   private db: Database | null = null
 
   constructor() {
@@ -62,7 +62,8 @@ export class QrSessionService {
           subscriber.next({
             access_token: data.access_token ?? '',
             refresh_token: data.refresh_token ?? '',
-            expires_in: data.expires_in ?? 0 })
+            expires_in: data.expires_in ?? 0,
+          })
 
           subscriber.complete()
         }

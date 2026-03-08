@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { Router } from '@angular/router'
-import { Check, LogOut, LucideAngularModule, Music2, RefreshCw } from 'lucide-angular'
+import { Check, CircleSlash, LogOut, LucideAngularModule, Music2, RefreshCw } from 'lucide-angular'
 import { interval, tap } from 'rxjs'
 import { filter, mergeAll, switchMap, take } from 'rxjs/operators'
 import { AuthService } from '../../services/auth.service'
@@ -18,6 +18,7 @@ export class PlayerComponent implements OnInit {
   readonly Music2 = Music2
   readonly RefreshCw = RefreshCw
   readonly LogOut = LogOut
+  readonly CircleSlash = CircleSlash
 
   private spotifyService = inject(SpotifyService)
   private playerService = inject(PlayerService)
@@ -75,6 +76,14 @@ export class PlayerComponent implements OnInit {
     } else {
       return this.playerService.addToPlaylist(playlistId)
     }
+  }
+
+  removeAndSkipToNext() {
+    this.playerService.removeFromAllPlaylists()
+    this.spotifyService.skipToNext().pipe(
+      takeUntilDestroyed(this.destroyRef),
+      switchMap(() => this.loadCurrentTrack()),
+    ).subscribe()
   }
 
   logout() {

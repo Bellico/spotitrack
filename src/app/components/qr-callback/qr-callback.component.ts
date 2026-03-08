@@ -52,7 +52,7 @@ export class QrCallbackComponent {
         switchMap(params => {
           const code = params.get('code')
 
-          if (!code || !sessionId) {
+          if (!code) {
             this.router.navigate(['/'])
 
             return EMPTY
@@ -68,9 +68,9 @@ export class QrCallbackComponent {
           this.qrSessionService.clearQrSessionId()
           this.success.set(true)
         }),
-        catchError(error => {
+        catchError(err => {
           this.qrSessionService.clearQrSessionId()
-          this.error.set(`Authentication failed. ${error.toString()}`)
+          this.error.set(`Authentication failed. ${err.toString()}`)
 
           return EMPTY
         }),

@@ -11,6 +11,7 @@
 - `PlayerService`: `currentTrack`, `playlists`, `playlistTracks` — all readonly signals with optimistic updates + rollback
 
 ## Important Conventions
+- `standalone: true` is the **default** in Angular 19+ — never add it explicitly
 - `inject()` function only (no constructor injection)
 - `takeUntilDestroyed(destroyRef)` for RxJS in components
 - `afterNextRender()` for browser-only init (QR code generation)
