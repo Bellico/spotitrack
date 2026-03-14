@@ -9,7 +9,9 @@
       "Bash(npm test:*)",
       "Bash(ng test:*)",
       "Bash(git:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npx ng:*)",
+      "WebSearch"
     ]
   }
 }

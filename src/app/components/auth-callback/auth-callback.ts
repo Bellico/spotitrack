@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core'
+import { isPlatformBrowser } from '@angular/common'
+import { Component, inject, PLATFORM_ID } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { EMPTY, switchMap, take } from 'rxjs'
+import { catchError, tap } from 'rxjs/operators'
 import { AuthService } from '../../services/auth.service'
 import { SpotifyAuthService } from '../../services/spotify-auth.service'
 
@@ -15,6 +17,10 @@ export class AuthCallbackComponent {
   private spotifyAuth = inject(SpotifyAuthService)
 
   constructor() {
+    if (!isPlatformBrowser(inject(PLATFORM_ID))) {
+      return
+    }
+
     this.route.queryParamMap
       .pipe(
         take(1),
@@ -29,10 +35,16 @@ export class AuthCallbackComponent {
 
           return this.spotifyAuth.exchangeCodeForToken(code)
         }),
+        tap((token) => {
+          this.authService.setTokenData(token)
+          this.router.navigate(['/player'])
+        }),
+        catchError(() => {
+          this.router.navigate(['/'])
+
+          return EMPTY
+        }),
       )
-      .subscribe((token) => {
-        this.authService.setTokenData(token)
-        this.router.navigate(['/player'])
-      })
+      .subscribe()
   }
 }
